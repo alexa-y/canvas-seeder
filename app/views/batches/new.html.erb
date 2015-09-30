@@ -69,7 +69,15 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <%= fp.select :types_of_assignments, options_for_select(Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS.map { |s| [s.to_s.titleize, s] }), label: 'Submission Types' %>
+        <div class="form-group">
+          <label class="control-label">Submission Types</label>
+          <% Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS.each do |type| %>
+            <div class="checkbox" style="margin-left: 20px;">
+              <input type="checkbox" name="batch[params][types_of_assignments][]" value="<%= type %>" checked="checked">
+              <%= type.to_s.titleize %>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
   <% end %>

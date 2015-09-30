@@ -1,6 +1,6 @@
 class BatchesController < ApplicationController
 
-  before_action only: [:show, :batch_params, :output] do
+  before_action only: [:show, :view_params, :output] do
     @batch = Batch.find params[:id]
   end
 
@@ -8,7 +8,7 @@ class BatchesController < ApplicationController
     @batches = Batch.all.includes(:canvas_configuration).order(created_at: :desc)
   end
 
-  def batch_params
+  def view_params
     render json: @batch.params, status: :ok
   end
 
@@ -39,7 +39,6 @@ class BatchesController < ApplicationController
     params[:batch][:params][:number_of_students] = (params[:batch][:params].delete(:number_of_students_min).to_i..params[:batch][:params].delete(:number_of_students_max).to_i)
     params[:batch][:params][:number_of_assignments] = (params[:batch][:params].delete(:number_of_assignments_min).to_i..params[:batch][:params].delete(:number_of_assignments_max).to_i)
     params[:batch][:params][:points_possible] = (params[:batch][:params].delete(:points_possible_min).to_i..params[:batch][:params].delete(:points_possible_max).to_i)
-    params[:batch][:params][:types_of_assignments] = [params[:batch][:params][:types_of_assignments]]
     params.require(:batch).permit!
   end
 end

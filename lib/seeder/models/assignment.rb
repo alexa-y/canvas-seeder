@@ -1,7 +1,7 @@
 module Seeder::Models
   class Assignment
-    TYPES_OF_ASSIGNMENTS = %i(online_text_entry)
-    attr_accessor :id, :name, :description, :grading_type, :submission_type, :points_possible, :submissions
+    TYPES_OF_ASSIGNMENTS = %i(online_text_entry online_upload discussion_topic)
+    attr_accessor :id, :discussion_topic_id, :name, :description, :grading_type, :submission_type, :points_possible, :submissions
 
     def initialize(submission_type, points_possible)
       self.submission_type = submission_type
@@ -18,6 +18,7 @@ module Seeder::Models
       resp = client.create_assignment(course_id, { assignment: { name: name, submission_types: [submission_type], points_possible: points_possible,
         grading_type: grading_type, description: description, published: true } })
       self.id = resp['id']
+      self.discussion_topic_id = resp['discussion_topic'].try(:[], 'id') if submission_type.to_sym == :discussion_topic
       Rails.logger.info("Created assignment #{name} in course #{course_id}")
     end
   end

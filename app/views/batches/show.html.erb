@@ -4,11 +4,14 @@
   <li><b>Configuration Name: </b><%= @batch.canvas_configuration.name %></li>
   <li><b>Domain: </b><%= link_to @batch.canvas_configuration.domain, @batch.canvas_configuration.domain %></li>
   <li><b>Created at: </b><%= @batch.created_at %></li>
+  <% if @batch.state == 'completed' %>
+    <li><%= link_to 'Go to first course', "#{@batch.canvas_configuration.domain}/courses/#{@batch.output[:courses].first['id']}", target: '_blank' %></li>
+  <% end %>
 </ul>
 <div class="row">
   <div class="col-md-12">
     <label class="control-label">Batch Params</label>
-    <%= link_to '[View in new tab]', batch_params_batch_path(@batch), target: '_blank' %>
+    <%= link_to '[View in new tab]', view_params_batch_path(@batch), target: '_blank' %>
     <pre><%= JSON.pretty_generate(@batch.params.as_json) %></pre>
   </div>
 </div>

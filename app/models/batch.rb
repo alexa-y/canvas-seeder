@@ -6,4 +6,11 @@ class Batch < ActiveRecord::Base
   before_create do
     self.state ||= 'queued'
   end
+
+  def retry
+    self.state = 'queued'
+    self.output = {}
+    save!
+    Seeder::Seeder.new(self).delay.process!
+  end
 end

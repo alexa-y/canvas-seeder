@@ -1,6 +1,5 @@
 module Seeder
   class Seeder
-    include Models
 
     def initialize(batch)
       @batch = batch
@@ -26,34 +25,34 @@ module Seeder
 
     def process
       rounds(:number_of_teachers) do
-        teacher = User.new @params[:account_id]
+        teacher = ::Seeder::Models::User.new @params[:account_id]
         teacher.populate
         @teachers << teacher
       end
       rounds(:number_of_students) do
-        student = User.new @params[:account_id]
+        student = ::Seeder::Models::User.new @params[:account_id]
         student.populate
         @students << student
       end
       rounds(:number_of_courses) do |index|
-        course = Course.new @params[:account_id], @params[:term_id]
+        course = ::Seeder::Models::Course.new @params[:account_id], @params[:term_id]
         course.populate
         @courses << course
       end
       @courses.each do |course|
         rounds(:number_of_sections) do
-          section = Section.new
+          section = ::Seeder::Models::Section.new
           section.populate course.name
           @teachers.each do |teacher|
-            section.enrollments << Enrollment.new(teacher, 'TeacherEnrollment')
+            section.enrollments << ::Seeder::Models::Enrollment.new(teacher, 'TeacherEnrollment')
           end
           @students.each do |student|
-            section.enrollments << Enrollment.new(student, 'StudentEnrollment')
+            section.enrollments << ::Seeder::Models::Enrollment.new(student, 'StudentEnrollment')
           end
           course.sections << section
         end
         rounds(:number_of_assignments) do
-          assignment = Assignment.new pick(:types_of_assignments), pick(:points_possible)
+          assignment = ::Seeder::Models::Assignment.new pick(:types_of_assignments), pick(:points_possible)
           assignment.populate
           apply_submissions(assignment)
           course.assignments << assignment
@@ -64,7 +63,7 @@ module Seeder
     def apply_submissions(assignment)
       @students.each do |student|
         if pick(:students_with_submissions).to_i > rand(100)
-          submission = Submission.new student, assignment.submission_type
+          submission = ::Seeder::Models::Submission.new student, assignment.submission_type
           submission.populate
           assignment.submissions << submission
         end
@@ -93,7 +92,8 @@ module Seeder
         course.assignments.each do |assignment|
           assignment.save! api_client, course.id
           assignment.submissions.each do |submission|
-            submission.save! api_client, course.id, assignment.id
+            assignment_id = assignment.submission_type.to_sym == :discussion_topic ? assignment.discussion_topic_id : assignment.id
+            submission.save! api_client, course.id, assignment_id
             grade_submission(course, assignment, submission)
           end
         end
@@ -143,7 +143,7 @@ module Seeder
         number_of_students: 5,
         number_of_assignments: (5..10),
         points_possible: (5..20),
-        types_of_assignments: Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS,
+        types_of_assignments: ::Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS,
         students_with_submissions: 80,
         grade_submissions: 80
       }

@@ -18,4 +18,5 @@
 //= require formValidation/formValidation
 //= require formValidation/en_US
 //= require formValidation/bootstrap
+//= require jquery.turbolinks
 //= require_tree .
