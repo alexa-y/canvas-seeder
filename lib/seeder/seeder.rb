@@ -13,9 +13,13 @@ module Seeder
     end
 
     def process!
+      @batch.update state: 'running'
       process
       save_objects
       write_output_to_batch
+      @batch.update state: 'completed'
+    rescue
+      @batch.update state: 'failed'
     end
 
     def process
@@ -46,6 +50,29 @@ module Seeder
           end
           course.sections << section
         end
+        rounds(:number_of_assignments) do
+          assignment = Assignment.new pick(:types_of_assignments), pick(:points_possible)
+          assignment.populate
+          apply_submissions(assignment)
+          course.assignments << assignment
+        end
+      end
+    end
+
+    def apply_submissions(assignment)
+      @students.each do |student|
+        if pick(:students_with_submissions) > rand(100)
+          submission = Submission.new student, assignment.submission_type
+          submission.populate
+          assignment.submissions << submission
+        end
+      end
+    end
+
+    def grade_submission(course, assignment, submission)
+      if pick(:grade_submissions) > rand(100)
+        score = assignment.grading_type == 'pass_fail' ? %w(complete incomplete).sample : (0..assignment.points_possible).to_a.sample
+        submission.grade! api_client, course.id, assignment.id, score
       end
     end
 
@@ -59,6 +86,13 @@ module Seeder
           section.save! api_client, course.id
           section.enrollments.each do |enrollment|
             enrollment.save! api_client, section.id
+          end
+        end
+        course.assignments.each do |assignment|
+          assignment.save! api_client, course.id
+          assignment.submissions.each do |submission|
+            submission.save! api_client, course.id, assignment.id
+            grade_submission(course, assignment, submission)
           end
         end
       end
@@ -76,11 +110,24 @@ module Seeder
     end
 
     def rounds(type)
-      raise 'This method must be called with a block' unless block_given?
       num = @params[type]
       num = num.to_a.sample if num.is_a?(Range)
-      num.times do |index|
-        yield index
+      if block_given?
+        num.times do |index|
+          yield index
+        end
+      else
+        num
+      end
+    end
+    alias_method :count, :rounds
+
+    def pick(type)
+      obj = @params[type]
+      if obj.is_a?(Range) || obj.is_a?(Array)
+        obj.to_a.sample
+      else
+        obj
       end
     end
 
@@ -88,14 +135,15 @@ module Seeder
       {
         account_id: 'self',
         term_id: nil,
-        number_of_courses: 2,
-        number_of_sections: 2,
+        number_of_courses: 1,
+        number_of_sections: 1,
         number_of_teachers: 1,
         number_of_students: 5,
         number_of_assignments: (5..10),
         points_possible: (5..20),
-        types_of_assignments: %i(online_text_entry discussion_topic),
-        number_of_submissions: 1
+        types_of_assignments: %i(online_text_entry),
+        students_with_submissions: 80,
+        grade_submissions: 80
       }
     end
   end

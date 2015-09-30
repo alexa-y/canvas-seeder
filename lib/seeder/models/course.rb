@@ -18,7 +18,7 @@ module Seeder::Models
     end
 
     def save!(client)
-      resp = client.create_course(account_id, { course: { name: name, course_code: course_code, term_id: term_id, sis_course_id: sis_id } })
+      resp = client.create_course(account_id, { offer: true, course: { name: name, course_code: course_code, term_id: term_id, sis_course_id: sis_id } })
       self.id = resp['id']
       Rails.logger.info("Created course #{name}")
     end

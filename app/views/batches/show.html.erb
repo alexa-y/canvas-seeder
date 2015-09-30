@@ -1,4 +1,6 @@
 <ul>
+  <li><b>Description: </b><%= @batch.description %></li>
+  <li><b>State: </b><%= @batch.state %></li>
   <li><b>Configuration Name: </b><%= @batch.canvas_configuration.name %></li>
   <li><b>Domain: </b><%= link_to @batch.canvas_configuration.domain, @batch.canvas_configuration.domain %></li>
   <li><b>Created at: </b><%= @batch.created_at %></li>

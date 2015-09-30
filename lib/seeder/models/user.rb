@@ -8,11 +8,11 @@ module Seeder::Models
 
     def populate
       self.name = Forgery::Name.full_name
-      self.email = Forgery::Email.address
       user_number = SecureRandom.random_number(1000)
       self.username = "#{Forgery::Internet.user_name}_#{user_number}"
+      self.email = "#{username}@example.com"
       self.password = SecureRandom.hex
-      self.sis_id = "sis_#{username}_#{user_number}"
+      self.sis_id = "sis_#{username}"
     end
 
     def save!(client)

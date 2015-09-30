@@ -1,9 +1,21 @@
+<div class="row">
+  <div class="col-md-6"><b>Description</b></div>
+  <div class="col-md-3"><b>Config name</b></div>
+  <div class="col-md-1"><b>State</b></div>
+  <div class="col-md-2"><b>Created at</b></div>
+</div>
 <% @batches.each do |batch| %>
   <div class="row">
     <div class="col-md-6">
-      <%= link_to batch.canvas_configuration.name, batch_path(batch) %>
+      <%= link_to batch.description, batch_path(batch) %>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
+      <%= batch.canvas_configuration.name %>
+    </div>
+    <div class="col-md-1">
+      <%= batch.state %>
+    </div>
+    <div class="col-md-2">
       <%= batch.created_at %>
     </div>
   </div>

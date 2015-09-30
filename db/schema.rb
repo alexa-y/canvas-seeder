@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150929191801) do
+ActiveRecord::Schema.define(version: 20150930154439) do
 
   create_table "batches", force: :cascade do |t|
     t.integer  "canvas_configuration_id"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 20150929191801) do
     t.text     "output"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.string   "state"
+    t.string   "description"
   end
 
   add_index "batches", ["canvas_configuration_id"], name: "index_batches_on_canvas_configuration_id"
