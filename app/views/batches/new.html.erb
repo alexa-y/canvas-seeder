@@ -1,0 +1,79 @@
+<h1>New Batch</h1>
+<%= bootstrap_form_for @batch, html: { 'data-fv-framework' => 'bootstrap', 'data-fv-icon-valid' => 'glyphicon glyphicon-ok', 'data-fv-icon-invalid' => 'glyphicon glyphicon-remove', 'data-fv-icon-validating' => 'glyphicon glyphicon-refresh' } do |f| %>
+  <%= f.select :canvas_configuration_id, options_from_collection_for_select(@canvas_configurations, 'id', 'name_with_domain') %>
+  <%= f.text_field :description %>
+  <%= f.fields_for :params do |fp| %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.text_field :account_id, value: 'self', label: 'Canvas Account Id', 'data-fv-notempty' => 'true' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.text_field :term_id, label: 'Canvas Term Id (optional)' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_courses_min, value: 1, min: 1, max: 1000, label: 'Minimum Number of Courses' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_courses_max, value: 1, min: 1, max: 1000, label: 'Maximum Number of Courses' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_sections_min, value: 1, min: 1, max: 1000, label: 'Minimum Number of Sections' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_sections_max, value: 1, min: 1, max: 1000, label: 'Maximum Number of Sections' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_teachers_min, value: 1, min: 1, max: 1000, label: 'Minimum Number of Teachers' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_teachers_max, value: 2, min: 1, max: 1000, label: 'Maximum Number of Teachers' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_students_min, value: 5, min: 1, max: 1000, label: 'Minimum Number of Students' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_students_max, value: 20, min: 1, max: 1000, label: 'Maximum Number of Students' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_assignments_min, value: 5, min: 1, max: 1000, label: 'Minimum Number of Assignments' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :number_of_assignments_max, value: 20, min: 1, max: 1000, label: 'Maximum Number of Assignments' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :points_possible_min, value: 5, min: 1, max: 1000, label: 'Minimum Points Possible' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :points_possible_max, value: 10, min: 1, max: 1000, label: 'Maximum Points Possible' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.number_field :students_with_submissions, value: 80, min: 0, max: 100, label: '% of Students With Submissions' %>
+      </div>
+      <div class="col-md-6">
+        <%= fp.number_field :grade_submissions, value: 80, min: 0, max: 100, label: '% of Submissions to be Graded' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <%= fp.select :types_of_assignments, options_for_select(Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS.map { |s| [s.to_s.titleize, s] }), label: 'Submission Types' %>
+      </div>
+    </div>
+  <% end %>
+  <%= f.form_group do %>
+    <%= f.primary %>
+  <% end %>
+<% end %>

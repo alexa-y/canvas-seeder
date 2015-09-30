@@ -50,5 +50,5 @@ gem 'bootstrap-sass', '~> 3.3.5'
 gem 'bootstrap_form'
 
 gem 'will_paginate-bootstrap'
-gem 'forgery', '~> 0.6.1', path: '/Users/byoung/ruby/forgery'
+gem 'forgery', '~> 0.6.1', github: 'ben-y/forgery'
 gem 'bearcat'

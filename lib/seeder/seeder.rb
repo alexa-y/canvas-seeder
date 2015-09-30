@@ -18,7 +18,9 @@ module Seeder
       save_objects
       write_output_to_batch
       @batch.update state: 'completed'
-    rescue
+    rescue => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
       @batch.update state: 'failed'
     end
 
@@ -61,7 +63,7 @@ module Seeder
 
     def apply_submissions(assignment)
       @students.each do |student|
-        if pick(:students_with_submissions) > rand(100)
+        if pick(:students_with_submissions).to_i > rand(100)
           submission = Submission.new student, assignment.submission_type
           submission.populate
           assignment.submissions << submission
@@ -70,7 +72,7 @@ module Seeder
     end
 
     def grade_submission(course, assignment, submission)
-      if pick(:grade_submissions) > rand(100)
+      if pick(:grade_submissions).to_i > rand(100)
         score = assignment.grading_type == 'pass_fail' ? %w(complete incomplete).sample : (0..assignment.points_possible).to_a.sample
         submission.grade! api_client, course.id, assignment.id, score
       end
@@ -113,11 +115,11 @@ module Seeder
       num = @params[type]
       num = num.to_a.sample if num.is_a?(Range)
       if block_given?
-        num.times do |index|
+        num.to_i.times do |index|
           yield index
         end
       else
-        num
+        num.to_i
       end
     end
     alias_method :count, :rounds
@@ -141,7 +143,7 @@ module Seeder
         number_of_students: 5,
         number_of_assignments: (5..10),
         points_possible: (5..20),
-        types_of_assignments: %i(online_text_entry),
+        types_of_assignments: Seeder::Models::Assignment::TYPES_OF_ASSIGNMENTS,
         students_with_submissions: 80,
         grade_submissions: 80
       }

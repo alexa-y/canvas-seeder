@@ -12,7 +12,12 @@
  *
  *= require_tree .
  *= require rails_bootstrap_forms
+ *= require formValidation
  *= require_self
  */
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+.spacer {
+  margin-top: 50px;
+}

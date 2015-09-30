@@ -1,5 +1,6 @@
 module Seeder::Models
   class Assignment
+    TYPES_OF_ASSIGNMENTS = %i(online_text_entry)
     attr_accessor :id, :name, :description, :grading_type, :submission_type, :points_possible, :submissions
 
     def initialize(submission_type, points_possible)

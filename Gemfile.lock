@@ -1,5 +1,6 @@
-PATH
-  remote: /Users/byoung/ruby/forgery
+GIT
+  remote: git://github.com/ben-y/forgery.git
+  revision: e89101a08ccca89372b810f5b26dd4f136c6a600
   specs:
     forgery (0.6.1)
 

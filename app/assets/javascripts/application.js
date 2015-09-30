@@ -14,4 +14,8 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require jquery.readyselector
+//= require formValidation/formValidation
+//= require formValidation/en_US
+//= require formValidation/bootstrap
 //= require_tree .
