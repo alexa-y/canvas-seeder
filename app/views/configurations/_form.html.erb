@@ -1,0 +1,8 @@
+<%= bootstrap_form_for @configuration, url: (@configuration.new_record? ? configurations_path : configuration_path(@configuration)), layout: :horizontal, label_col: 'col-md-2', control_col: 'col-md-6' do |f| %>
+  <%= f.text_field :name %>
+  <%= f.text_field :domain %>
+  <%= f.text_field :access_token %>
+  <div class="col-md-offset-2 col-md-2">
+    <div style="margin-left: -10px;"><%= f.primary %></div>
+  </div>
+<% end %>

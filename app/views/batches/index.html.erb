@@ -1,0 +1,10 @@
+<% @batches.each do |batch| %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= link_to batch.canvas_configuration.name, batch_path(batch) %>
+    </div>
+    <div class="col-md-6">
+      <%= batch.created_at %>
+    </div>
+  </div>
+<% end %>
