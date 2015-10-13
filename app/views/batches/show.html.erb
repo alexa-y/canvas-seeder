@@ -8,6 +8,17 @@
     <li><%= link_to 'Go to first course', "#{@batch.canvas_configuration.domain}/courses/#{@batch.output[:courses].first['id']}", target: '_blank' %></li>
   <% end %>
 </ul>
+<% if @batch.state == 'running' || @batch.state == 'queued' %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped active" style="min-width: 2em; width: <%= @batch.progress %>%">
+          <%= @batch.progress %>%
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 <div class="row">
   <div class="col-md-12">
     <label class="control-label">Batch Params</label>

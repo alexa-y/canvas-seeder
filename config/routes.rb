@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     member do
       get 'output'
       get 'view_params'
+      get 'progress'
     end
   end
   resources :configurations

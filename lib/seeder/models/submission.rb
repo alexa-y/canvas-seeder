@@ -17,11 +17,12 @@ module Seeder::Models
     def save!(client, course_id, assignment_id)
       if submission_type.to_sym == :online_upload
         Dir.mktmpdir do |dir|
-          file_path = "#{dir}/#{user.name}.txt"
+          file_name = "#{user.name}-#{SecureRandom.uuid}.txt"
+          file_path = "#{dir}/#{file_name}"
           File.open(file_path, 'w') do |file|
             file.write Forgery::Education.sentence_from_literature
           end
-          client.course_file_upload_submission(course_id, assignment_id, user.id, file_path, { name: "#{user.name}.txt", as_user_id: user.id })
+          client.course_file_upload_submission(course_id, assignment_id, user.id, file_path, { name: file_name, as_user_id: user.id })
         end
       elsif submission_type.to_sym == :discussion_topic
         client.post("/api/v1/courses/#{course_id}/discussion_topics/#{assignment_id}/entries", { as_user_id: user.id, message: Forgery::Education.sentence_from_literature })

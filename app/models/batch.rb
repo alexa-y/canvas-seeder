@@ -5,6 +5,11 @@ class Batch < ActiveRecord::Base
 
   before_create do
     self.state ||= 'queued'
+    self.progress ||= 0
+  end
+
+  before_save do
+    self.progress = 100 if self.state == 'completed'
   end
 
   def retry

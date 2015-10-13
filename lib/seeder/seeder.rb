@@ -14,6 +14,7 @@ module Seeder
     def process!
       @batch.update state: 'running'
       process
+      calculate_progress
       save_objects
       write_output_to_batch
       @batch.update state: 'completed'
@@ -60,6 +61,22 @@ module Seeder
       end
     end
 
+    def calculate_progress
+      @total_objects = @teachers.length + @students.length
+      @total_objects += @courses.length
+      @total_objects += @courses.flat_map { |c| c.sections }.length
+      @total_objects += @courses.flat_map { |c| c.sections }.flat_map { |s| s.enrollments }.length
+      @total_objects += @courses.flat_map { |c| c.assignments }.length
+      @total_objects += @courses.flat_map { |c| c.assignments }.flat_map { |a| a.submissions }.length
+    end
+
+    def increment_progress
+      @current_progress ||= 0
+      @current_progress += 1
+
+      @batch.update progress: (@current_progress * 100 / @total_objects)
+    end
+
     def apply_submissions(assignment)
       @students.each do |student|
         if pick(:students_with_submissions).to_i > rand(100)
@@ -80,21 +97,27 @@ module Seeder
     def save_objects
       (@teachers + @students).each do |user|
         user.save! api_client
+        increment_progress
       end
       @courses.each do |course|
         course.save! api_client
+        increment_progress
         course.sections.each do |section|
           section.save! api_client, course.id
+          increment_progress
           section.enrollments.each do |enrollment|
             enrollment.save! api_client, section.id
+            increment_progress
           end
         end
         course.assignments.each do |assignment|
           assignment.save! api_client, course.id
+          increment_progress
           assignment.submissions.each do |submission|
             assignment_id = assignment.submission_type.to_sym == :discussion_topic ? assignment.discussion_topic_id : assignment.id
             submission.save! api_client, course.id, assignment_id
             grade_submission(course, assignment, submission)
+            increment_progress
           end
         end
       end

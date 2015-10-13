@@ -72,3 +72,21 @@ rangeCallback = ->
   min = parseInt($("[name='batch[params][#{this.toString()}_min]']").val())
   max = parseInt($("[name='batch[params][#{this.toString()}_max]']").val())
   min <= max
+
+$('.batches.show').ready ->
+  if $('.progress-bar').length > 0
+    window.progressInterval = setInterval(->
+      batchId = window.location.pathname.match(/\/batches\/(\d+)/)
+      unless batchId
+        clearInterval(window.progressInterval)
+        return
+      $.ajax "/batches/#{batchId[1]}/progress",
+        type: 'get'
+        dataType: 'json'
+        success: (data) ->
+          if data.progress == 100
+            clearInterval(window.progressInterval)
+            window.location = window.location.pathname
+          $('.progress-bar').css('width', "#{data.progress}%")
+          $('.progress-bar').text("#{data.progress}%")
+    , 5000);

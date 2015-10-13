@@ -1,6 +1,6 @@
 class BatchesController < ApplicationController
 
-  before_action only: [:show, :view_params, :output] do
+  before_action only: [:show, :view_params, :output, :progress] do
     @batch = Batch.find params[:id]
   end
 
@@ -14,6 +14,10 @@ class BatchesController < ApplicationController
 
   def output
     render json: @batch.output, status: :ok
+  end
+
+  def progress
+    render json: { progress: @batch.progress || 0 }, status: :ok
   end
 
   def new
